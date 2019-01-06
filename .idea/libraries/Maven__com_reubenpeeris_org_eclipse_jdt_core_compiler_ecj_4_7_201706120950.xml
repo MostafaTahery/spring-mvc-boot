@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.reubenpeeris:org.eclipse.jdt.core.compiler.ecj:4.7-201706120950">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/reubenpeeris/org.eclipse.jdt.core.compiler.ecj/4.7-201706120950/org.eclipse.jdt.core.compiler.ecj-4.7-201706120950.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/reubenpeeris/org.eclipse.jdt.core.compiler.ecj/4.7-201706120950/org.eclipse.jdt.core.compiler.ecj-4.7-201706120950-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/reubenpeeris/org.eclipse.jdt.core.compiler.ecj/4.7-201706120950/org.eclipse.jdt.core.compiler.ecj-4.7-201706120950-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
