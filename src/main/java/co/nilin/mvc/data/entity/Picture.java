@@ -1,5 +1,8 @@
 package co.nilin.mvc.data.entity;
 
+
+import org.springframework.data.redis.core.RedisHash;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -8,11 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Arrays;
 
 @Entity
 @Table(name="PICTURES")
-public class Picture {
+
+public class Picture implements Serializable {
 
 	
 	@javax.persistence.Id

@@ -1,23 +1,19 @@
 package co.nilin.mvc.data.entity;
 
-import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+
+import org.springframework.data.redis.core.RedisHash;
+
+import java.io.Serializable;
+import java.util.List;
+import javax.persistence.*;
 
 @Entity
 @Table(name="ALBUMS")
-public class Album {
+
+public class Album implements Serializable{
 	
-	@javax.persistence.Id
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long albumId;
 	
@@ -109,7 +105,7 @@ public class Album {
 				"albumId=" + albumId +
 				", name='" + name + '\'' +
 				", creator=" + creator +
-				", pictures=" + pictures +
+				//", pictures=" + pictures +
 				'}';
 	}
 }

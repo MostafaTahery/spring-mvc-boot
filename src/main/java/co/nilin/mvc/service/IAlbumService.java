@@ -11,7 +11,7 @@ public interface IAlbumService {
 
 	List<Album> findAll();
 	Album findAlbumById(Long albumId);
-	List<Album> findAlbumByUserName(String userName);
+	List<Album> findAlbumsByUserName(String userName);
 	void addAlbum(Long userId,String name);
 	void deleteAlbum(Long id);
 	void updateAlbum(Album album);

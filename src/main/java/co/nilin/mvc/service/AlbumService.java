@@ -22,7 +22,7 @@ public class AlbumService implements IAlbumService {
 	private UserRepository usrrepo;
 	
 	@Override
-	public List<Album> findAlbumByUserName(String userName) {
+	public List<Album> findAlbumsByUserName(String userName) {
 		List<Album> albums=new ArrayList<Album>();
 		for(Album a:albumRepo.findAll()) {
 			if(a.getCreator().getUserName().equals(userName))albums.add(a);

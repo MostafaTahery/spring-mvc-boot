@@ -1,43 +1,47 @@
 package co.nilin.mvc;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.sql.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import co.nilin.mvc.data.entity.Album;
 import co.nilin.mvc.data.entity.Picture;
+import co.nilin.mvc.data.entity.SimpleDto;
 import co.nilin.mvc.data.entity.User;
+import co.nilin.mvc.service.AlbumService;
 import co.nilin.mvc.service.PictureService;
 import co.nilin.mvc.service.UserService;
-import co.nilin.mvc.service.UtilBase64Image;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import co.nilin.mvc.data.entity.Album;
-import co.nilin.mvc.data.entity.SimpleDto;
-import co.nilin.mvc.service.AlbumService;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.sql.Date;
+import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
 @RequestMapping(value = "/rest", produces = {MediaType.APPLICATION_JSON_VALUE})
+@EnableCaching
 public class RestController {
 
-    @Autowired
-    public AlbumService albmsrvc;
     @Autowired
     public UserService usrservice;
     @Autowired
     public PictureService picsrvc;
+    @Autowired
+    public AlbumService albmsrvc;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -100,7 +104,6 @@ public class RestController {
         return usr;
     }
 
-
     @RequestMapping(value = "/user", method = RequestMethod.PUT, params = {"fullName", "userName", "passWord", "pass2", "email", "birthDate"})
     public User editprofile(@RequestParam("fullName") String fullName,
                             @RequestParam("userName") String userName, @RequestParam("passWord") String passWord, @RequestParam("pass2") String pass2,
@@ -117,11 +120,11 @@ public class RestController {
         } else return usr;
     }
 
-
     @RequestMapping(value = "/signin", method = RequestMethod.POST, params = {"name_in", "pass_in"}, produces = {"application/json"}, consumes = {"application/json"})
     @ResponseBody
     public User signinUser(@RequestParam("name_in") String name_in, @RequestParam("pass_in") String pass_in) {
         User usr = usrservice.findById(usrservice.findIdByUserName(name_in));
+
         if (usrservice.isValid(name_in, pass_in)) {
             return usr;
         } else {
@@ -133,6 +136,8 @@ public class RestController {
     @ResponseBody
     public Album getAlbumInfo(@PathVariable("albumId") String albumId) {
         Album album = albmsrvc.findAlbumById(Long.parseLong(albumId));
+        System.out.println("hooooy");
+        logger.debug("Hoo Hoo Hoo! ! !");
         return album;
     }
 
@@ -165,14 +170,15 @@ public class RestController {
     }
 
     @Cacheable(value = "post-single", key = "#creator")
-    @GetMapping(value = "/albums/{creator}", produces = {"application/json"})
+    @GetMapping(value = "/albums/{creator}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public List<Album> getUserAlbums(@PathVariable("creator") String creator) {
-        List<Album> albums = albmsrvc.findAlbumByUserName(creator);
+        List<Album> albums = albmsrvc.findAlbumsByUserName(creator);
+        System.out.println("aaaaaaaaaaaaaaahhhhhhhhhhhhhhh");
         return albums;
     }
 
-    @CachePut(value = "post-pic", key = "#albumId")
+    @CachePut(value = "albumId", key = "#albumId")
     @GetMapping(value = "/Pics/{albumId}", produces = {"application/json"})
     @ResponseBody
     public List<Picture> getAlbumPics(@PathVariable("albumId") String albumId) {

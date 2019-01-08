@@ -1,9 +1,12 @@
 package co.nilin.mvc.data.entity;
 
+
+import org.springframework.data.redis.core.RedisHash;
+
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,7 +18,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="USERSS")
-public class User {
+
+public class User implements Serializable {
 	
 	
 	@javax.persistence.Id
@@ -148,7 +152,7 @@ public class User {
 				", email='" + email + '\'' +
 				", birthDate=" + birthDate +
 				", profilePic=" + Arrays.toString(profilePic) +
-				", albums=" + albums +
+				//", albums=" + albums +
 				'}';
 	}
 }

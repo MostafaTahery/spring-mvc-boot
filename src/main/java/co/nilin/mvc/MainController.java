@@ -38,12 +38,12 @@ public class MainController {
 	@Autowired
 	public PictureService pictureservice;
 
-	private final Logger logger= LoggerFactory.getLogger(this.getClass());
+	//private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
 	@RequestMapping(value = "/home/", method = RequestMethod.GET)
 	public String greetingg(HttpSession session, Model model) {
 		System.out.println("home get method");
-		logger.debug("Hello from debug");
+		//logger.debug("Hello from debug");
 		return "home";
 	}
 
@@ -116,7 +116,7 @@ public class MainController {
 		String username = (String) session.getAttribute("token");
 		model.addAttribute("username", username);
 		List<Album> albums = new ArrayList<Album>();
-		albums = albumservice.findAlbumByUserName(username);
+		albums = albumservice.findAlbumsByUserName(username);
 		model.addAttribute("albums", albums);
 		System.out.println("albums page");
 		return "albums";

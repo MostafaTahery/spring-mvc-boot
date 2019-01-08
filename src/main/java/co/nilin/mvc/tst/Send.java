@@ -21,14 +21,16 @@ public class Send {
             String message = "The Message"+num;
 
             Thread t1 = new Thread(() -> {
-                try {
-                    channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
+                while(1==1) {
+                    try {
+                        channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
+                        Thread.sleep(10000);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    } finally {
+                        System.out.println(" [x] Sent '" + message + "'");
 
-                } catch (Exception ex){
-                    ex.printStackTrace();
-                }
-                finally {
-                    System.out.println(" [x] Sent '" + message + "'");
+                    }
                 }
             });
 
