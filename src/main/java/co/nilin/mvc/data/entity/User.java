@@ -1,8 +1,5 @@
 package co.nilin.mvc.data.entity;
 
-
-import org.springframework.data.redis.core.RedisHash;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
@@ -32,9 +29,11 @@ public class User implements Serializable {
 	private Date birthDate;
 	private byte[] profilePic;
 	
-	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER,mappedBy="creator")
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY,mappedBy="creator")
 	private List<Album> albums;
-		
+
+	@OneToMany(cascade =CascadeType.ALL,fetch =FetchType.LAZY,mappedBy ="user" )
+	private List<Registration> registerations;
 	
 	public User() {
 		super();

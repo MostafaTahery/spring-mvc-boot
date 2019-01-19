@@ -1,9 +1,5 @@
 package co.nilin.mvc.data.entity;
 
-
-
-import org.springframework.data.redis.core.RedisHash;
-
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.*;

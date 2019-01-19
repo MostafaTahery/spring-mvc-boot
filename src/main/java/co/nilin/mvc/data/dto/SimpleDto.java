@@ -1,4 +1,4 @@
-package co.nilin.mvc.data.entity;
+package co.nilin.mvc.data.dto;
 
 public class SimpleDto {
 	private String message;

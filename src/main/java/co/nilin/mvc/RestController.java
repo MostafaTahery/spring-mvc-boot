@@ -1,38 +1,36 @@
 package co.nilin.mvc;
 
+import co.nilin.mvc.data.dto.RegisterDto;
 import co.nilin.mvc.data.entity.Album;
 import co.nilin.mvc.data.entity.Picture;
-import co.nilin.mvc.data.entity.SimpleDto;
+import co.nilin.mvc.data.dto.SimpleDto;
 import co.nilin.mvc.data.entity.User;
 import co.nilin.mvc.service.AlbumService;
 import co.nilin.mvc.service.PictureService;
 import co.nilin.mvc.service.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Date;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping(value = "/rest", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(value = "/rest")
 @EnableCaching
 public class RestController {
 
@@ -42,6 +40,8 @@ public class RestController {
     public PictureService picsrvc;
     @Autowired
     public AlbumService albmsrvc;
+
+    public String verificationCode;
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -58,6 +58,7 @@ public class RestController {
             return null;
         }
     }
+
 
     @RequestMapping(value = "/user/full_name", method = RequestMethod.PATCH, params = {"userId", "fullName"})
     @ResponseBody
@@ -237,11 +238,42 @@ public class RestController {
         return pic;
     }
 
-
     @GetMapping("/test")
-    @ResponseBody
+    @ResponseBody()
     public SimpleDto test() {
         logger.debug("Logging Test");
         return new SimpleDto();
     }
+
+    @RequestMapping(value = "/register", params = "receptor", method = RequestMethod.POST)
+    @ResponseBody
+    public String register(@RequestParam("receptor") String receptor) {
+        verificationCode = String.valueOf((Math.round(Math.random() * 10000)));
+        RegisterDto registerDto = new RegisterDto();
+        registerDto.setMessage(verificationCode);
+        registerDto.setReceptor(receptor);
+        System.out.println(registerDto.toString());
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String, Object> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("receptor", registerDto.getReceptor());
+        multiValueMap.add("message", registerDto.getMessage());
+        HttpEntity<MultiValueMap<String, Object>> registerDtoHttpEntity = new HttpEntity<MultiValueMap<String, Object>>(multiValueMap, headers);
+        String url = "https://api.kavenegar.com/v1/49634F384F6752574B654F3261756E744B5A4A6C57513D3D/sms/send";
+        //+registerDto.toString();
+        URI uri = UriComponentsBuilder.fromUriString(url).build().toUri();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.exchange(uri, HttpMethod.POST, registerDtoHttpEntity, String.class);
+        return verificationCode;
+    }
+
+    @RequestMapping(value = "/verify",method = RequestMethod.POST,params = "vcode")
+    public String verify(@RequestParam("vcode") String verificationCode ){
+        String status;
+        if(this.verificationCode.equals(verificationCode))status="Verified";
+        else status="Not Verified";
+        return status;
+    }
+
+
 }

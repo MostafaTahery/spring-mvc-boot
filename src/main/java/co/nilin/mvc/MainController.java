@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import co.nilin.mvc.data.entity.Album;
@@ -40,12 +37,7 @@ public class MainController {
 
 	//private final Logger logger= LoggerFactory.getLogger(this.getClass());
 
-	@RequestMapping(value = "/home/", method = RequestMethod.GET)
-	public String greetingg(HttpSession session, Model model) {
-		System.out.println("home get method");
-		//logger.debug("Hello from debug");
-		return "home";
-	}
+
 
 	@RequestMapping(value = "/home/", method = RequestMethod.POST, params = { "fullName", "userName", "passWord",
 			"pass2","email", "birthDate" })
